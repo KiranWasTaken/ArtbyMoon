@@ -1,0 +1,15 @@
+# Keep LF line endings in the repository and in every checkout (including
+# Windows with core.autocrlf=true), matching Prettier's default, so
+# `pnpm format:check` passes on any machine.
+* text=auto eol=lf
+
+# Binary assets: never touch line endings.
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

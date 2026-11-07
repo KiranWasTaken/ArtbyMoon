@@ -1,0 +1,548 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* Layout for scroll-pinned sequences; mirrors media.pinnable in lib/motion/tokens.ts. */
+@custom-variant pinned (@media (min-width: 64rem) and (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine));
+
+/* ==========================================================================
+   ArtbyMoon — design tokens
+   Raw palette lives in @theme; semantic tokens (surface, ink, line, accent)
+   are CSS variables that switch between the "studio" (ivory) and "darkroom"
+   tones. Components should use semantic tokens, not raw palette values.
+   See docs/02-design-system.md.
+   ========================================================================== */
+
+/* `static` emits every variable even when no utility uses it: placeholders and
+   inline styles reference pigments as var(--color-*) at runtime. */
+@theme static {
+  /* Reset Tailwind's default palette so only studio colours are available. */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Paper — warm ivory surfaces */
+  --color-paper-50: #faf7f1;
+  --color-paper-100: #f4efe6;
+  --color-paper-200: #eae2d3;
+  --color-paper-300: #dcd1bd;
+
+  /* Ink — warm black, never pure #000 */
+  --color-ink-950: #1b1a17;
+  --color-ink-700: #4a463f;
+  --color-ink-500: #6b655c;
+  --color-ink-300: #a39c90;
+
+  /* Night — the darkroom tone for photography and artwork viewing */
+  --color-night-950: #121110;
+  --color-night-900: #1c1a18;
+  --color-night-800: #2a2724;
+  --color-night-300: #9c958a;
+  --color-night-100: #e9e3d8;
+
+  /* Pigments — sampled from ArtbyMoon's Instagram grid (k-means over saturated
+     pixels, see docs/02). Re-check against proper photographs later. Used as
+     marks and placeholder washes, never as large fills. */
+  --color-vermilion: #c24f2b;
+  --color-vermilion-deep: #a5391f;
+  --color-cobalt: #165ab0;
+  --color-indigo: #26355b;
+  --color-turquoise: #329597;
+  --color-lavender: #556292;
+  --color-rose: #c7679c;
+  --color-sap: #627d40;
+  --color-ochre: #ca972b;
+  --color-tape: #e6d8b4;
+
+  /* Fluid type scale. Display sizes are tuned for Fraunces. */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.14em;
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.45;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+  --text-lede: clamp(1.1875rem, 1.05rem + 0.45vw, 1.4375rem);
+  --text-lede--line-height: 1.5;
+  --text-title: clamp(1.5rem, 1.2rem + 1.1vw, 2.25rem);
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.01em;
+  --text-display-m: clamp(2.25rem, 1.5rem + 3vw, 4.25rem);
+  --text-display-m--line-height: 1;
+  --text-display-m--letter-spacing: -0.02em;
+  --text-display-l: clamp(3rem, 1.6rem + 6vw, 7.5rem);
+  --text-display-l--line-height: 0.92;
+  --text-display-l--letter-spacing: -0.03em;
+  --text-display-xl: clamp(4.5rem, 1.5rem + 15vw, 15rem);
+  --text-display-xl--line-height: 0.84;
+  --text-display-xl--letter-spacing: -0.04em;
+
+  /* Layout spacing on top of Tailwind's 4px base unit */
+  --spacing-gutter: clamp(1rem, 0.4rem + 2.6vw, 2.75rem);
+  --spacing-section: clamp(5rem, 3rem + 6vw, 9.5rem);
+  --container-page: 100rem;
+  --container-prose: 38rem;
+
+  /* Motion — mirrored in src/lib/motion/tokens.ts */
+  --ease-brush: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ink: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Elevation for objects resting on the studio wall */
+  --shadow-rest:
+    0 1px 1px rgb(27 26 23 / 0.06), 0 6px 14px -6px rgb(27 26 23 / 0.18);
+  --shadow-lift:
+    0 2px 2px rgb(27 26 23 / 0.05), 0 22px 38px -14px rgb(27 26 23 / 0.32);
+}
+
+@theme inline {
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-caveat), "Segoe Print", cursive;
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+}
+
+/* Semantic tokens ------------------------------------------------------- */
+
+:root {
+  --surface: var(--color-paper-100);
+  --surface-raised: var(--color-paper-50);
+  --ink: var(--color-ink-950);
+  --ink-muted: var(--color-ink-500); /* 5.0:1 on paper — body captions */
+  --ink-faint: var(--color-ink-300); /* decorative only, fails AA for text */
+  --line: rgb(27 26 23 / 0.14);
+  --line-strong: var(--color-ink-950);
+  --accent: var(--color-vermilion); /* marks, large text, UI ≥ 3:1 */
+  --accent-ink: var(--color-vermilion-deep); /* small accent text, 5.2:1 */
+  --focus: var(--color-cobalt);
+  --grain-opacity: 0.55;
+
+  --duration-micro: 160ms;
+  --duration-ui: 320ms;
+  --duration-tone: 900ms;
+
+  color-scheme: light;
+}
+
+/* The darkroom: photography, artwork viewing. Applied to <html> by the
+   ToneTrigger component, or statically to a route/section. */
+[data-tone="darkroom"] {
+  --surface: var(--color-night-950);
+  --surface-raised: var(--color-night-900);
+  --ink: var(--color-night-100);
+  --ink-muted: var(--color-night-300);
+  --ink-faint: #5d5850;
+  --line: rgb(233 227 216 / 0.14);
+  --line-strong: var(--color-night-100);
+  --accent: #e2694b;
+  --accent-ink: #ec8a70;
+  --focus: #8fa2f0;
+  --grain-opacity: 0.25;
+
+  color-scheme: dark;
+}
+
+/* Base ------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    background-color: var(--surface);
+    transition: background-color var(--duration-tone) var(--ease-ink);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    position: relative;
+    min-height: 100svh;
+    background-color: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color var(--duration-tone) var(--ease-ink),
+      color var(--duration-tone) var(--ease-ink);
+  }
+
+  /* The embedded Studio (/studio) gets no paper grain over its interface. */
+  html:has([data-studio]) body::before {
+    display: none;
+  }
+
+  /* Paper grain: one tiled SVG noise layer, no blend modes (cheap on mobile). */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    transition: opacity var(--duration-tone) var(--ease-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--color-paper-50);
+  }
+
+  .font-display {
+    font-optical-sizing: auto;
+    font-variation-settings:
+      "SOFT" 60,
+      "WONK" 0;
+  }
+
+  /* Italic display type uses the separately loaded (non-preloaded) italic file. */
+  .font-display.italic {
+    font-family: var(--font-fraunces-italic), ui-serif, Georgia, serif;
+  }
+}
+
+/* Components that are clearer as CSS than as utility soup --------------- */
+
+@layer components {
+  .page-x {
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Ink link: an underline that is drawn on hover, like a pen stroke. */
+  .ink-link {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--duration-ui) var(--ease-brush);
+    padding-bottom: 0.15em;
+  }
+  @media (hover: hover) {
+    .ink-link:hover {
+      background-size: 0% 1px;
+      background-position: 100% 100%;
+    }
+  }
+
+  /* Masking tape — the studio-wall motif. Torn ends via clip-path. */
+  .tape {
+    position: absolute;
+    height: 0.95rem;
+    width: 42%;
+    background-color: color-mix(in oklab, var(--color-tape) 82%, transparent);
+    box-shadow: 0 1px 1px rgb(27 26 23 / 0.08);
+    clip-path: polygon(
+      0% 12%,
+      4% 0%,
+      9% 14%,
+      14% 2%,
+      100% 0%,
+      96% 18%,
+      100% 38%,
+      95% 56%,
+      100% 78%,
+      97% 100%,
+      0% 100%,
+      3% 80%,
+      0% 60%,
+      5% 42%,
+      1% 26%
+    );
+  }
+
+  /* Placeholder art -------------------------------------------------------
+     Material stand-ins (primed canvas, card stock, photo paper) with a faint
+     pigment wash. Always labelled; never shaped like a fake painting. */
+  .placeholder-art {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: var(--ratio);
+    color: var(--color-ink-950);
+    background-color: var(--color-paper-200);
+    background-image:
+      radial-gradient(
+        120% 90% at 28% 22%,
+        color-mix(in oklab, var(--pigment) 34%, transparent),
+        transparent 68%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgb(27 26 23 / 0.045) 0 1px,
+        transparent 1px 3px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgb(27 26 23 / 0.04) 0 1px,
+        transparent 1px 3px
+      );
+    box-shadow:
+      inset 0 0 0 1px rgb(27 26 23 / 0.08),
+      inset 0 -10px 18px -12px rgb(27 26 23 / 0.25);
+  }
+  .placeholder-art[data-placeholder="abstract"] {
+    background-image:
+      linear-gradient(
+        160deg,
+        color-mix(in oklab, var(--pigment) 38%, transparent) 0 38%,
+        transparent 38%
+      ),
+      radial-gradient(
+        70% 60% at 78% 80%,
+        color-mix(in oklab, var(--color-ochre) 30%, transparent),
+        transparent 70%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgb(27 26 23 / 0.045) 0 1px,
+        transparent 1px 3px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgb(27 26 23 / 0.04) 0 1px,
+        transparent 1px 3px
+      );
+  }
+  .placeholder-art[data-placeholder="sketch"] {
+    background-color: var(--color-paper-50);
+    background-image:
+      radial-gradient(
+        80% 70% at 60% 40%,
+        color-mix(in oklab, var(--pigment) 16%, transparent),
+        transparent 70%
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        rgb(27 26 23 / 0.07) 0 1px,
+        transparent 1px 7px
+      );
+    box-shadow: inset 0 0 0 1px rgb(27 26 23 / 0.07);
+  }
+  .placeholder-art[data-placeholder="bookmark"] {
+    border-radius: 2px;
+    background-color: var(--color-paper-50);
+    background-image:
+      radial-gradient(
+        circle at 50% 7%,
+        var(--surface) 0 4.5%,
+        rgb(27 26 23 / 0.2) 4.6% 5.6%,
+        transparent 5.8%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 18%,
+        color-mix(in oklab, var(--pigment) 40%, transparent) 62%,
+        color-mix(in oklab, var(--pigment) 18%, transparent)
+      );
+  }
+  .placeholder-art[data-placeholder="photo"] {
+    background-color: var(--color-night-800);
+    background-image:
+      radial-gradient(
+        90% 70% at 72% 18%,
+        rgb(233 227 216 / 0.16),
+        transparent 62%
+      ),
+      radial-gradient(
+        60% 50% at 18% 88%,
+        color-mix(in oklab, var(--color-ochre) 22%, transparent),
+        transparent 70%
+      );
+    box-shadow: inset 0 0 0 1px rgb(233 227 216 / 0.08);
+    color: var(--color-night-300);
+  }
+  .placeholder-art__label {
+    position: absolute;
+    left: 0.6rem;
+    bottom: 0.55rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-size: 0.625rem;
+    line-height: 1.2;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, currentColor 70%, transparent);
+  }
+  .placeholder-art__label > :first-child {
+    font-weight: 600;
+  }
+  .placeholder-art[data-placeholder="bookmark"] .placeholder-art__label {
+    left: 50%;
+    bottom: 0.7rem;
+    writing-mode: vertical-rl;
+    transform: translateX(-50%) rotate(180deg);
+  }
+
+  /* Polaroid: white frame (0.82:1), square window, and a pencilled line where
+     ArtbyMoon's handwritten caption will be. The caption is never invented. */
+  .placeholder-art[data-placeholder="polaroid"] {
+    border-radius: 1px;
+    background-color: var(--color-paper-50);
+    background-image: none;
+    box-shadow: inset 0 0 0 1px rgb(27 26 23 / 0.06);
+  }
+  .placeholder-art[data-placeholder="polaroid"]::before {
+    content: "";
+    position: absolute;
+    top: 4.9%;
+    left: 6%;
+    right: 6%;
+    height: 72.1%;
+    background-color: var(--color-paper-200);
+    background-image:
+      radial-gradient(
+        110% 90% at 30% 25%,
+        color-mix(in oklab, var(--pigment) 42%, transparent),
+        transparent 70%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgb(27 26 23 / 0.04) 0 1px,
+        transparent 1px 3px
+      );
+    box-shadow: inset 0 0 0 1px rgb(27 26 23 / 0.08);
+  }
+  .placeholder-art[data-placeholder="polaroid"]::after {
+    content: "";
+    position: absolute;
+    left: 14%;
+    right: 22%;
+    bottom: 5.5%;
+    height: 1px;
+    background-color: rgb(27 26 23 / 0.22);
+    transform: rotate(-0.6deg);
+  }
+  .placeholder-art[data-placeholder="polaroid"] .placeholder-art__label {
+    top: 78.5%;
+    bottom: auto;
+    left: 7%;
+    right: 7%;
+    font-size: 0.5625rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /* Lined notebook paper: how ArtbyMoon photographs her polaroids. A ruled
+     surface with a red margin line; purely decorative. */
+  .notebook {
+    --rule-gap: 2rem;
+    --margin: clamp(1.25rem, 5vw, 4.5rem);
+    background-color: var(--color-paper-50);
+    background-image:
+      linear-gradient(
+        90deg,
+        transparent calc(var(--margin) - 1px),
+        rgb(194 79 43 / 0.3) calc(var(--margin) - 1px) var(--margin),
+        transparent var(--margin)
+      ),
+      repeating-linear-gradient(
+        180deg,
+        transparent 0 calc(var(--rule-gap) - 1px),
+        rgb(22 90 176 / 0.13) calc(var(--rule-gap) - 1px) var(--rule-gap)
+      );
+  }
+
+  /* Hairline rule that GSAP can draw (scaleX) from the left. */
+  .rule {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: var(--line);
+    transform-origin: 0 50%;
+  }
+}
+
+/* SplitText line masks clip at the line box; give descenders (g, j, y) room. */
+[data-reveal="lines"] > * {
+  padding-bottom: 0.24em;
+  margin-bottom: -0.24em;
+}
+
+/* Shared-element morph: a gallery thumbnail becomes the artwork page image
+   (React <ViewTransition share="morph">). Brushed, not bouncy. */
+::view-transition-group(.morph) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-brush);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Review mode: add ?review to any URL to highlight copy still awaiting
+   ArtbyMoon's approval (CopyText renders data-draft). Off by default. */
+html[data-review] [data-draft] {
+  background-color: color-mix(in oklab, var(--color-ochre) 24%, transparent);
+  outline: 1px dashed var(--color-ochre);
+  outline-offset: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+html[data-review] body::after {
+  content: "Review mode · draft copy highlighted";
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 80;
+  translate: -50% 0;
+  padding: 0.5rem 0.9rem;
+  background-color: var(--color-ochre);
+  color: var(--color-ink-950);
+  font-size: var(--text-label);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Intro choreography guard -------------------------------------------------
+   Elements marked [data-intro] start hidden only when JS is running and the
+   visitor allows motion. A CSS failsafe reveals them if GSAP never runs. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-intro] {
+    visibility: hidden;
+    animation: intro-failsafe 0s 3.5s forwards;
+  }
+}
+@keyframes intro-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
