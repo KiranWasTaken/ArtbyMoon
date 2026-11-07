@@ -152,7 +152,11 @@ export async function POST(request: NextRequest) {
 async function sanityReachable() {
   if (!publishedClient) return true; // local content files: nothing to reach
   try {
-    await publishedClient.fetch("1", {}, { signal: AbortSignal.timeout(4000) });
+    await publishedClient.fetch(
+      "1",
+      {},
+      { signal: AbortSignal.timeout(4000), cache: "no-store" },
+    );
     return true;
   } catch (error) {
     console.error("[revalidate] Sanity health check failed", error);

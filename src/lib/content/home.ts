@@ -29,8 +29,11 @@ import { getUpcomingWorkshops } from "./workshops";
 
 /**
  * The homepage's single data source. Content comes from the active source
- * (Sanity or local files); real featured work replaces the labelled
- * placeholders slot by slot, so the design holds while content arrives.
+ * (Sanity or local files; published content only, drafts only in an editor's
+ * Draft Mode). Per collection, featured works are shown first; with none
+ * featured, the newest works. Where placeholders are shown (see
+ * showPlaceholders) they fill the remaining slots; in production, sections
+ * show real work only.
  */
 
 function toPreview(artwork: Artwork): PreviewItem {
@@ -43,15 +46,53 @@ function toPreview(artwork: Artwork): PreviewItem {
   };
 }
 
-/** Real featured works first; placeholders fill whatever slots remain. */
+/**
+ * Labelled placeholders fill empty homepage slots in `next dev` and in the
+ * sample-content preview, so layouts can be judged before content exists.
+ * Production builds show only real, published work: empty slots are left
+ * out and sections with nothing real are hidden (src/app/page.tsx).
+ * Compared inline so the bundler can drop the unused branch.
+ */
+const showPlaceholders =
+  process.env.NODE_ENV !== "production" ||
+  process.env.ARTBYMOON_SAMPLE_CONTENT === "1";
+
+/**
+ * Real works first; placeholders fill the remaining slots where they are
+ * shown, otherwise the list holds real works only (never more than the
+ * section is designed for).
+ */
 function fillSlots(
   real: PreviewItem[],
   placeholders: PreviewItem[],
 ): PreviewItem[] {
-  return [...real, ...placeholders.slice(real.length)].slice(
-    0,
-    placeholders.length,
-  );
+  const items = showPlaceholders
+    ? [...real, ...placeholders.slice(real.length)]
+    : real;
+  return items.slice(0, placeholders.length);
+}
+
+/** Newest first by creation date; works without a date keep their given order. */
+function newestFirst(works: Artwork[]): Artwork[] {
+  return works
+    .map((work, index) => ({ work, index }))
+    .toSorted((a, b) => {
+      const ad = a.work.createdAt ?? "";
+      const bd = b.work.createdAt ?? "";
+      if (ad && bd && ad !== bd) return bd.localeCompare(ad);
+      return a.index - b.index;
+    })
+    .map((x) => x.work);
+}
+
+/**
+ * Which works a homepage section shows from a list (already published-only
+ * and in display order): the featured ones, in display order; if none are
+ * featured, the newest ones. Used per collection and per canvas subject.
+ */
+function homepageWorks(works: Artwork[]): Artwork[] {
+  const featured = works.filter((a) => a.featured);
+  return featured.length ? featured : newestFirst(works);
 }
 
 const PLACEHOLDER_PREVIEW: Record<CollectionStyle, Media> = {
@@ -91,23 +132,27 @@ export async function getHomeContent() {
       : "/artworks";
     return { ...item, href: href as `/${string}` };
   };
-  const featuredIn = (style: CollectionStyle) => {
+  const worksIn = (style: CollectionStyle) => {
     const c = byStyle(style);
-    return c
-      ? artworks.filter((a) => a.collection === c.slug && a.featured)
-      : [];
+    return c ? artworks.filter((a) => a.collection === c.slug) : [];
   };
+  /** Featured works of a collection, or its newest if none is featured. */
+  const selectedIn = (style: CollectionStyle) => homepageWorks(worksIn(style));
 
   // Each wall slot is shaped for one collection (a slim bookmark slot, a
-  // polaroid slot…), so it only takes a featured work from that collection.
+  // polaroid slot…), so it only takes a work from that collection, and a
+  // work appears on the wall once. In production an unfilled slot stays
+  // empty (null) so the other pieces keep their places.
   const used = new Set<string>();
-  const studioWall = studioWallPlaceholders.map((slot) => {
-    const style = slot.href.split("/")[2] as CollectionStyle;
-    const real = featuredIn(style).find((a) => !used.has(a.id));
-    if (!real) return relink(slot);
-    used.add(real.id);
-    return toPreview(real);
-  });
+  const studioWall: (PreviewItem | null)[] = studioWallPlaceholders.map(
+    (slot) => {
+      const style = slot.href.split("/")[2] as CollectionStyle;
+      const real = selectedIn(style).find((a) => !used.has(a.id));
+      if (!real) return showPlaceholders ? relink(slot) : null;
+      used.add(real.id);
+      return toPreview(real);
+    },
+  );
 
   const explore: ExploreRoom[] = [
     // Featured collections first, otherwise display order.
@@ -143,7 +188,24 @@ export async function getHomeContent() {
     },
   ];
 
-  const canvasFeatured = featuredIn("canvas");
+  // Canvas cards are per subject: each takes a work with that subject
+  // (featured first, otherwise newest), never the same work twice.
+  const canvasWorks = worksIn("canvas");
+  const canvasUsed = new Set<string>();
+  const canvasSubjects = canvasSubjectPlaceholders.flatMap((subject) => {
+    const real = homepageWorks(
+      canvasWorks.filter(
+        (a) => a.subjects?.includes(subject.slug) && !canvasUsed.has(a.id),
+      ),
+    )[0];
+    if (real) {
+      canvasUsed.add(real.id);
+      return [{ ...subject, preview: toPreview(real) }];
+    }
+    return showPlaceholders
+      ? [{ ...subject, preview: relink(subject.preview) }]
+      : [];
+  });
   const photoPreview = (p: Photograph): PreviewItem => ({
     id: p.id,
     href: "/photography",
@@ -160,26 +222,19 @@ export async function getHomeContent() {
     explore,
     canvas: {
       collection: sectionCollection("canvas"),
-      subjects: canvasSubjectPlaceholders.map((subject) => {
-        const real = canvasFeatured.find((a) =>
-          a.subjects?.includes(subject.slug),
-        );
-        return real
-          ? { ...subject, preview: toPreview(real) }
-          : { ...subject, preview: relink(subject.preview) };
-      }),
+      subjects: canvasSubjects,
     },
     polaroids: {
       collection: sectionCollection("polaroids"),
       items: fillSlots(
-        featuredIn("polaroids").map(toPreview),
+        selectedIn("polaroids").map(toPreview),
         polaroidPlaceholders.map(relink),
       ),
     },
     bookmarks: {
       collection: sectionCollection("bookmarks"),
       items: fillSlots(
-        featuredIn("bookmarks").map(toPreview),
+        selectedIn("bookmarks").map(toPreview),
         bookmarkPlaceholders.map(relink),
       ),
     },

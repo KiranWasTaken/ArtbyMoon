@@ -6,10 +6,13 @@ import { ArtMedia } from "@/components/ui/ArtMedia";
 import { CopyText } from "@/components/ui/CopyText";
 import { Handnote } from "@/components/ui/Handnote";
 import type { HomeContent } from "@/lib/content/home";
-import { cssVars } from "@/lib/cn";
+import { cn, cssVars } from "@/lib/cn";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 import { media } from "@/lib/motion/tokens";
 import { useReveal } from "@/lib/motion/useReveal";
+
+/** Below this many bookmarks the line fits on screen: no pinning, a plain row. */
+const MIN_TRAVEL = 6;
 
 /** Thread lengths (rem) so the line doesn't read as a uniform product shelf. */
 const threads = [2.5, 4, 3, 5, 2.75, 3.75, 4.5, 2.5, 3.5];
@@ -18,6 +21,8 @@ const threads = [2.5, 4, 3, 5, 2.75, 3.75, 4.5, 2.5, 3.5];
  * Bookmarks pegged to a studio drying line. With a mouse or trackpad on a wide
  * screen (motion allowed) the section pins and the line travels sideways;
  * scroll velocity sways the bookmarks. Touch devices and everything else get a native swipe row.
+ * With only a few bookmarks there is nothing to travel through, so the
+ * section stays an ordinary row (no full-height pinned stage).
  */
 export function BookmarkLine({
   bookmarks,
@@ -25,12 +30,14 @@ export function BookmarkLine({
   bookmarks: HomeContent["bookmarks"];
 }) {
   const { collection, items } = bookmarks;
+  const travel = items.length >= MIN_TRAVEL;
   const root = useRef<HTMLElement>(null);
   const track = useRef<HTMLUListElement>(null);
   useReveal(root);
 
   useGSAP(
     () => {
+      if (!travel) return;
       const mm = gsap.matchMedia();
       mm.add(media.pinnable, () => {
         const el = track.current;
@@ -68,7 +75,7 @@ export function BookmarkLine({
         });
       });
     },
-    { scope: root },
+    { scope: root, dependencies: [travel] },
   );
 
   return (
@@ -76,7 +83,11 @@ export function BookmarkLine({
       ref={root}
       id="bookmarks"
       aria-labelledby="bookmarks-title"
-      className="overflow-hidden py-section pinned:flex pinned:h-svh pinned:flex-col pinned:justify-center pinned:py-0"
+      className={cn(
+        "overflow-hidden py-section",
+        travel &&
+          "pinned:flex pinned:h-svh pinned:flex-col pinned:justify-center pinned:py-0",
+      )}
     >
       <div className="page-x">
         <div className="mx-auto grid max-w-page gap-6 lg:grid-cols-12 lg:items-end">
@@ -121,7 +132,11 @@ export function BookmarkLine({
         <ul
           ref={track}
           aria-label="Bookmarks"
-          className="page-x flex snap-x snap-mandatory scroll-px-(--spacing-gutter) [scrollbar-width:none] gap-6 overflow-x-auto pb-6 md:gap-10 pinned:w-max pinned:snap-none pinned:overflow-visible pinned:pr-[30vw]"
+          className={cn(
+            "page-x flex snap-x snap-mandatory scroll-px-(--spacing-gutter) [scrollbar-width:none] gap-6 overflow-x-auto pb-6 md:gap-10",
+            travel &&
+              "pinned:w-max pinned:snap-none pinned:overflow-visible pinned:pr-[30vw]",
+          )}
         >
           {items.map((item, i) => {
             return (
@@ -145,11 +160,22 @@ export function BookmarkLine({
                   <Link
                     href={item.href}
                     aria-label={`${item.label} ${i + 1}. View bookmarks`}
-                    className="block w-[clamp(5.5rem,7vw,7.5rem)] shadow-rest transition-[translate,box-shadow] duration-500 ease-brush hover:-translate-y-1 hover:shadow-lift"
+                    className={cn(
+                      "block shadow-rest transition-[translate,box-shadow] duration-500 ease-brush hover:-translate-y-1 hover:shadow-lift",
+                      // Photographs show the bookmark on a background, so
+                      // they need more width than a bare painted strip.
+                      item.media.kind === "image"
+                        ? "w-[clamp(8rem,12vw,11rem)]"
+                        : "w-[clamp(5.5rem,7vw,7.5rem)]",
+                    )}
                   >
                     <ArtMedia
                       media={item.media}
-                      sizes="(min-width: 64rem) 8rem, 6rem"
+                      sizes={
+                        item.media.kind === "image"
+                          ? "(min-width: 64rem) 11rem, 8rem"
+                          : "(min-width: 64rem) 8rem, 6rem"
+                      }
                     />
                   </Link>
                 </div>

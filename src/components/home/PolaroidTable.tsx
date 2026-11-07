@@ -26,6 +26,24 @@ const placement = [
   },
 ];
 
+/**
+ * With only a few prints, one centred row instead of the two-row scatter, so
+ * the table never looks half-empty (production shows real work only).
+ */
+const fewPlacement: Record<number, typeof placement> = {
+  1: [
+    {
+      li: "col-span-2 mx-auto w-1/2 sm:col-span-1 sm:col-start-2 sm:w-full lg:col-span-3 lg:col-start-5",
+      tilt: -3,
+    },
+  ],
+  2: [
+    { li: "lg:col-span-3 lg:col-start-3 lg:mt-8", tilt: -4 },
+    { li: "mt-10 lg:col-span-3 lg:col-start-8 lg:mt-0", tilt: 3 },
+  ],
+  3: placement.slice(0, 3),
+};
+
 interface PolaroidTableProps {
   polaroids: HomeContent["polaroids"];
   note: Copy;
@@ -81,7 +99,8 @@ export function PolaroidTable({ polaroids, note }: PolaroidTableProps) {
             className="mt-16 grid grid-cols-2 gap-x-5 sm:grid-cols-3 sm:gap-x-8 lg:mt-24 lg:grid-cols-12 lg:gap-x-6"
           >
             {items.map((item, i) => {
-              const place = placement[i % placement.length]!;
+              const layout = fewPlacement[items.length] ?? placement;
+              const place = layout[i % layout.length]!;
               return (
                 <li
                   key={item.id}

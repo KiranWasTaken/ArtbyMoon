@@ -133,6 +133,8 @@ export interface Artwork {
   note?: string;
   /** Feature on the homepage. */
   featured?: boolean;
+  /** When the record was first created (CMS); orders "newest" on the homepage. */
+  createdAt?: string;
   /** Overrides for search results and social previews (CMS). */
   seoTitle?: string;
   seoDescription?: string;

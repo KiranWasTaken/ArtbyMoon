@@ -25,6 +25,8 @@ export type ContentTag =
  *   keeps being served. Errors are logged with the query's tags.
  * - Draft Mode: Next.js re-runs cached functions per request without saving
  *   the result, so draft content never enters the public cache.
+ * - Builds: the underlying HTTP request is never stored in Next.js's fetch
+ *   cache, so each build (and each revalidation) reads current content.
  */
 export async function sanityFetch<T>({
   query,
@@ -53,6 +55,15 @@ export async function sanityFetch<T>({
     return await client.fetch<T>(
       query,
       previewParam ? { ...params, preview: preview && !!draftClient } : params,
+      // Opt this HTTP request out of Next.js's separate fetch cache. Without
+      // an explicit setting, `next build` stores every fetch there (untagged,
+      // ~15 min) and a later build, e.g. on Vercel, which restores
+      // .next/cache, would prerender those old responses. The result is
+      // still cached by this function's 'use cache' entry above, with its
+      // tags and lifetime unchanged: inside 'use cache', a no-store fetch
+      // only skips the fetch cache (it doesn't make the entry dynamic). No
+      // effect on browsers or page responses.
+      { cache: "no-store" },
     );
   } catch (error) {
     console.error(

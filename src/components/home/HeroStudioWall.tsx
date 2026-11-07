@@ -18,9 +18,24 @@ import { media, stagger } from "@/lib/motion/tokens";
  * Where each piece hangs on the desktop wall, in % of the 16:9 wall box
  * (x, y, width), its resting tilt, how strongly it drifts on scroll, the
  * `sizes` hint for real photographs, and its place in the mobile grid.
- * Order matches `studioWallPlaceholders`.
+ * Order matches `studioWallPlaceholders`. `shape` is the slot's designed
+ * width/height; a real photograph keeps that height and takes the width its
+ * own proportions need, up to `maxW` (growLeft: it widens towards the
+ * free wall on its left, so it never overlaps its neighbour).
  */
-const slots = [
+const slots: readonly {
+  x: number;
+  y: number;
+  w: number;
+  tilt: number;
+  depth: number;
+  sizes: string;
+  mobile: string;
+  shape: number;
+  maxW: number;
+  growLeft?: boolean;
+  mobileReal?: string;
+}[] = [
   {
     x: 75,
     y: 8,
@@ -29,6 +44,8 @@ const slots = [
     depth: 0.18,
     sizes: "(min-width: 64rem) 19vw, 40vw",
     mobile: "col-span-5",
+    shape: 4 / 5,
+    maxW: 23,
   },
   {
     x: 66.5,
@@ -38,6 +55,10 @@ const slots = [
     depth: 0.34,
     sizes: "(min-width: 64rem) 5vw, 15vw",
     mobile: "col-span-2 self-start",
+    shape: 1 / 3.4,
+    maxW: 12,
+    growLeft: true,
+    mobileReal: "col-span-4 self-start",
   },
   {
     x: 44,
@@ -47,6 +68,8 @@ const slots = [
     depth: 0.1,
     sizes: "(min-width: 64rem) 10vw, 40vw",
     mobile: "col-span-5",
+    shape: 0.82,
+    maxW: 12,
   },
   {
     x: 44,
@@ -56,6 +79,8 @@ const slots = [
     depth: 0.26,
     sizes: "(min-width: 64rem) 12vw, 33vw",
     mobile: "col-span-4",
+    shape: 1,
+    maxW: 14,
   },
   {
     x: 61,
@@ -65,8 +90,25 @@ const slots = [
     depth: 0.14,
     sizes: "(min-width: 64rem) 24vw, 66vw",
     mobile: "col-span-8",
+    shape: 4 / 3,
+    maxW: 27,
   },
-] as const;
+];
+
+/** Position and width for a piece: placeholders as designed, photographs by their proportions. */
+function fit(slot: (typeof slots)[number], media: PreviewItem["media"]) {
+  if (media.kind !== "image")
+    return { x: slot.x, w: slot.w, sizes: slot.sizes, mobile: slot.mobile };
+  const ratio = media.image.width / media.image.height;
+  const w =
+    Math.round(Math.min((slot.w / slot.shape) * ratio, slot.maxW) * 100) / 100;
+  return {
+    x: slot.growLeft ? slot.x + slot.w - w : slot.x,
+    w,
+    sizes: `(min-width: 64rem) ${Math.ceil(w)}vw, 40vw`,
+    mobile: slot.mobileReal ?? slot.mobile,
+  };
+}
 
 const collectionNames: Record<string, string> = {
   "/artworks/canvas": "Canvas paintings",
@@ -80,7 +122,8 @@ const collectionNames: Record<string, string> = {
 let introPlayed = false;
 
 interface HeroProps {
-  items: PreviewItem[];
+  /** One entry per wall slot; null leaves that slot empty (production, no work yet). */
+  items: (PreviewItem | null)[];
   copy: HomeContent["copy"]["hero"];
 }
 
@@ -106,7 +149,8 @@ export function HeroStudioWall({ items, copy }: HeroProps) {
 
           if (introPlayed) {
             gsap.set(containers, { autoAlpha: 1 });
-            gsap.from(pieces, { autoAlpha: 0, duration: 0.6, stagger: 0.04 });
+            if (pieces.length)
+              gsap.from(pieces, { autoAlpha: 0, duration: 0.6, stagger: 0.04 });
           } else {
             introPlayed = true;
             const name = q("[data-hero-name]")[0];
@@ -118,7 +162,7 @@ export function HeroStudioWall({ items, copy }: HeroProps) {
                 })
               : null;
 
-            gsap
+            const intro = gsap
               .timeline({ delay: 0.15 })
               .set(containers, { autoAlpha: 1 })
               .from(
@@ -140,28 +184,33 @@ export function HeroStudioWall({ items, copy }: HeroProps) {
                 q("[data-hero-brush] [data-draw]"),
                 { drawSVG: "0%", duration: 0.9, ease: "ink" },
                 0.8,
-              )
-              .from(
-                q("[data-hero-work]"),
-                {
-                  autoAlpha: 0,
-                  y: -40,
-                  rotation: (i: number) => (i % 2 ? 5 : -5),
-                  duration: 1.2,
-                  stagger: stagger.items,
-                },
-                0.55,
-              )
-              .from(
-                q(".tape"),
-                {
-                  scaleX: 0,
-                  duration: 0.45,
-                  stagger: stagger.items,
-                  ease: "ink",
-                },
-                1.05,
-              )
+              );
+            // The wall can be empty in production before any work is published.
+            const works = q("[data-hero-work]");
+            if (works.length)
+              intro
+                .from(
+                  works,
+                  {
+                    autoAlpha: 0,
+                    y: -40,
+                    rotation: (i: number) => (i % 2 ? 5 : -5),
+                    duration: 1.2,
+                    stagger: stagger.items,
+                  },
+                  0.55,
+                )
+                .from(
+                  q(".tape"),
+                  {
+                    scaleX: 0,
+                    duration: 0.45,
+                    stagger: stagger.items,
+                    ease: "ink",
+                  },
+                  1.05,
+                );
+            intro
               .from(
                 q("[data-hero-copy] > *"),
                 { autoAlpha: 0, y: 18, duration: 0.9, stagger: 0.08 },
@@ -251,60 +300,63 @@ export function HeroStudioWall({ items, copy }: HeroProps) {
         </div>
 
         {/* Pieces on the wall */}
-        <ul
-          aria-label="Work from the studio"
-          className="order-2 grid grid-cols-12 items-end gap-x-3 gap-y-6 md:max-w-xl lg:contents"
-        >
-          {items.map((item, i) => {
-            const slot = slots[i];
-            if (!slot) return null;
-            const name =
-              collectionNames[item.href.split("?")[0] ?? ""] ?? "Artworks";
-            const isBookmark =
-              item.media.kind === "placeholder" &&
-              item.media.placeholder === "bookmark";
-            return (
-              <li
-                key={item.id}
-                data-intro="piece"
-                data-hero-work
-                data-depth={slot.depth}
-                className={cn(
-                  slot.mobile,
-                  "lg:absolute lg:top-(--y) lg:left-(--x) lg:z-20 lg:w-(--w)",
-                )}
-                style={cssVars({
-                  "--x": `${slot.x}%`,
-                  "--y": `${slot.y}%`,
-                  "--w": `${slot.w}%`,
-                  "--tilt": `${slot.tilt}deg`,
-                })}
-              >
-                <Link
-                  href={item.href}
-                  aria-label={`${item.label}. View ${name}`}
-                  className="group relative block rotate-(--tilt) shadow-rest transition-[rotate,translate,box-shadow] duration-500 ease-brush hover:-translate-y-1.5 hover:rotate-0 hover:shadow-lift focus-visible:rotate-0"
+        {items.some(Boolean) && (
+          <ul
+            aria-label="Work from the studio"
+            className="order-2 grid grid-cols-12 items-end gap-x-3 gap-y-6 md:max-w-xl lg:contents"
+          >
+            {items.map((item, i) => {
+              const slot = slots[i];
+              if (!slot || !item) return null;
+              const place = fit(slot, item.media);
+              const name =
+                collectionNames[item.href.split("?")[0] ?? ""] ?? "Artworks";
+              const isBookmark =
+                item.media.kind === "placeholder" &&
+                item.media.placeholder === "bookmark";
+              return (
+                <li
+                  key={item.id}
+                  data-intro="piece"
+                  data-hero-work
+                  data-depth={slot.depth}
+                  className={cn(
+                    place.mobile,
+                    "lg:absolute lg:top-(--y) lg:left-(--x) lg:z-20 lg:w-(--w)",
+                  )}
+                  style={cssVars({
+                    "--x": `${place.x}%`,
+                    "--y": `${slot.y}%`,
+                    "--w": `${place.w}%`,
+                    "--tilt": `${slot.tilt}deg`,
+                  })}
                 >
-                  <ArtMedia media={item.media} sizes={slot.sizes} />
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "tape -top-2 left-1/2 -translate-x-1/2",
-                      i % 2 ? "rotate-3" : "-rotate-2",
-                      isBookmark && "w-[130%]",
-                    )}
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="eyebrow pointer-events-none absolute top-full left-0 mt-3 hidden whitespace-nowrap text-ink-muted opacity-0 transition-opacity duration-(--duration-ui) group-hover:opacity-100 group-focus-visible:opacity-100 lg:block"
+                  <Link
+                    href={item.href}
+                    aria-label={`${item.label}. View ${name}`}
+                    className="group relative block rotate-(--tilt) shadow-rest transition-[rotate,translate,box-shadow] duration-500 ease-brush hover:-translate-y-1.5 hover:rotate-0 hover:shadow-lift focus-visible:rotate-0"
                   >
-                    {name} →
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                    <ArtMedia media={item.media} sizes={place.sizes} />
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "tape -top-2 left-1/2 -translate-x-1/2",
+                        i % 2 ? "rotate-3" : "-rotate-2",
+                        isBookmark && "w-[130%]",
+                      )}
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="eyebrow pointer-events-none absolute top-full left-0 mt-3 hidden whitespace-nowrap text-ink-muted opacity-0 transition-opacity duration-(--duration-ui) group-hover:opacity-100 group-focus-visible:opacity-100 lg:block"
+                    >
+                      {name} →
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
 
         {/* Introduction */}
         <div

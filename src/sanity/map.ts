@@ -139,6 +139,7 @@ export interface RawArtwork {
   note?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
+  createdAt?: string | null;
   image?: RawImage | null;
   gallery?: { caption?: string | null; image?: RawImage | null }[] | null;
 }
@@ -183,6 +184,7 @@ export function mapArtwork(raw: RawArtwork): Artwork | null {
     description: clean(raw.description),
     note: clean(raw.note),
     featured: raw.featured === true,
+    createdAt: clean(raw.createdAt),
     seoTitle: clean(raw.seoTitle),
     seoDescription: clean(raw.seoDescription),
   };

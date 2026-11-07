@@ -33,6 +33,7 @@ export const artworksQuery = /* groq */ `
   "collection": collection->slug.current,
   title, year, medium, dimensions, subjects, series, availability,
   featured, order, caption, description, note, seoTitle, seoDescription,
+  "createdAt": _createdAt,
   "image": image${IMAGE},
   "gallery": gallery[defined(asset)]{ caption, "image": @${IMAGE} }
 }`;
