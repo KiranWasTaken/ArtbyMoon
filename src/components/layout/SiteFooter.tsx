@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Crescent } from "@/components/ui/Crescent";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { footerNav, site } from "@/lib/site";
 
 /** Quiet by design: the homepage's closing section carries the invitation. */
@@ -12,7 +13,7 @@ export function SiteFooter() {
           className="flex items-center gap-2 font-display text-title"
           aria-label={`${site.name}, home`}
         >
-          {site.name}
+          <Wordmark />
           <Crescent className="size-4 text-accent" />
         </Link>
         <nav aria-label="Footer">

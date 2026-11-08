@@ -213,51 +213,51 @@ const typeScale = [
   {
     token: "display-xl",
     sample: "ArtbyMoon",
-    family: "Fraunces · SOFT 60 · opsz auto",
+    family: "Instrument Serif",
     cls: "font-display text-display-xl",
   },
   {
     token: "display-l",
     sample: "Inside the studio",
-    family: "Fraunces",
+    family: "Instrument Serif",
     cls: "font-display text-display-l",
   },
   {
     token: "display-m",
     sample: "Canvas paintings",
-    family: "Fraunces",
+    family: "Instrument Serif",
     cls: "font-display text-display-m",
   },
   {
     token: "title",
     sample: "Title to be confirmed",
-    family: "Fraunces italic",
+    family: "Instrument Serif italic",
     cls: "font-display text-title italic",
   },
   {
     token: "lede",
     sample:
       "Introductory paragraphs set a little larger, in the interface grotesk.",
-    family: "Schibsted Grotesk",
+    family: "DM Sans",
     cls: "text-lede",
   },
   {
     token: "body",
     sample:
       "Running text for journal posts, workshop details and artwork notes. 17px with generous leading, about 65 characters per line.",
-    family: "Schibsted Grotesk",
+    family: "DM Sans",
     cls: "text-body max-w-prose",
   },
   {
     token: "caption",
     sample: "Acrylic on canvas · dimensions · year",
-    family: "Schibsted Grotesk",
+    family: "DM Sans",
     cls: "text-caption text-ink-muted",
   },
   {
     token: "label",
     sample: "Collection 04 · Bookmarks",
-    family: "Schibsted Grotesk, uppercase, +0.14em",
+    family: "DM Sans 500, uppercase, +0.12em",
     cls: "eyebrow",
   },
   {

@@ -53,28 +53,34 @@
   --color-ochre: #ca972b;
   --color-tape: #e6d8b4;
 
-  /* Fluid type scale. Display sizes are tuned for Fraunces. */
+  /*
+   * Fluid type scale, tuned for Instrument Serif (display) and DM Sans (text).
+   * Instrument Serif is narrower and lighter than a book serif, so display
+   * sizes run ~10% larger (same line lengths, more presence) with gentle
+   * negative tracking; its fine hairlines would crowd at tighter values.
+   * DM Sans has a generous x-height, so body sizes stay as they were.
+   */
   --text-label: 0.75rem;
   --text-label--line-height: 1.3;
-  --text-label--letter-spacing: 0.14em;
+  --text-label--letter-spacing: 0.12em;
   --text-caption: 0.875rem;
-  --text-caption--line-height: 1.45;
+  --text-caption--line-height: 1.5;
   --text-body: 1.0625rem;
   --text-body--line-height: 1.65;
   --text-lede: clamp(1.1875rem, 1.05rem + 0.45vw, 1.4375rem);
   --text-lede--line-height: 1.5;
-  --text-title: clamp(1.5rem, 1.2rem + 1.1vw, 2.25rem);
-  --text-title--line-height: 1.15;
-  --text-title--letter-spacing: -0.01em;
-  --text-display-m: clamp(2.25rem, 1.5rem + 3vw, 4.25rem);
-  --text-display-m--line-height: 1;
-  --text-display-m--letter-spacing: -0.02em;
-  --text-display-l: clamp(3rem, 1.6rem + 6vw, 7.5rem);
-  --text-display-l--line-height: 0.92;
-  --text-display-l--letter-spacing: -0.03em;
-  --text-display-xl: clamp(4.5rem, 1.5rem + 15vw, 15rem);
+  --text-title: clamp(1.625rem, 1.3rem + 1.2vw, 2.5rem);
+  --text-title--line-height: 1.08;
+  --text-title--letter-spacing: -0.005em;
+  --text-display-m: clamp(2.5rem, 1.65rem + 3.3vw, 4.75rem);
+  --text-display-m--line-height: 0.98;
+  --text-display-m--letter-spacing: -0.012em;
+  --text-display-l: clamp(3.25rem, 1.75rem + 6.6vw, 8.25rem);
+  --text-display-l--line-height: 0.9;
+  --text-display-l--letter-spacing: -0.018em;
+  --text-display-xl: clamp(5rem, 1.7rem + 16.5vw, 16.5rem);
   --text-display-xl--line-height: 0.84;
-  --text-display-xl--letter-spacing: -0.04em;
+  --text-display-xl--letter-spacing: -0.022em;
 
   /* Layout spacing on top of Tailwind's 4px base unit */
   --spacing-gutter: clamp(1rem, 0.4rem + 2.6vw, 2.75rem);
@@ -94,8 +100,8 @@
 }
 
 @theme inline {
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-hand: var(--font-caveat), "Segoe Print", cursive;
 
   --color-surface: var(--surface);
@@ -199,16 +205,20 @@
     color: var(--color-paper-50);
   }
 
+  /* Instrument Serif has a single weight: never fake a bold or an italic. */
   .font-display {
-    font-optical-sizing: auto;
-    font-variation-settings:
-      "SOFT" 60,
-      "WONK" 0;
+    font-synthesis: none;
+    font-kerning: normal;
   }
 
-  /* Italic display type uses the separately loaded (non-preloaded) italic file. */
-  .font-display.italic {
-    font-family: var(--font-fraunces-italic), ui-serif, Georgia, serif;
+  /*
+   * Italic display type, including italic words inside a heading (the "Moon"
+   * of the wordmark), uses the separately loaded, non-preloaded italic file.
+   */
+  .font-display.italic,
+  .font-display .italic {
+    font-family: var(--font-instrument-italic), ui-serif, Georgia, serif;
+    font-style: italic;
   }
 }
 

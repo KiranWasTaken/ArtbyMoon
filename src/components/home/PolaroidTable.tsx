@@ -55,7 +55,7 @@ export function PolaroidTable({ polaroids, note }: PolaroidTableProps) {
     <RevealScope
       id="polaroids"
       aria-labelledby="polaroids-title"
-      className="notebook border-y border-line py-section"
+      className="notebook overflow-x-clip border-y border-line py-section"
     >
       <div className="page-x">
         <div className="mx-auto max-w-page">
