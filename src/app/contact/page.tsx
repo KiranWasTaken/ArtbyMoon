@@ -8,7 +8,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Contact",
   description:
-    "Get in touch with ArtbyMoon about artwork, commissions, collaborations or workshops, by direct message on Instagram.",
+    "Get in touch with ArtbyMoon about artwork, commissions, collaborations or Paint with Moon sessions, by direct message on Instagram.",
   path: "/contact",
 });
 

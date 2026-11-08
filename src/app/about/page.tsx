@@ -59,7 +59,7 @@ export default async function AboutPage() {
       title: c.title,
     })),
     { href: "/photography", eyebrow: "Visual journal", title: "Photography" },
-    { href: "/workshops", eyebrow: "Join in", title: "Workshops" },
+    { href: "/workshops", eyebrow: "Join in", title: "Paint with Moon" },
     { href: "/contact", eyebrow: "Say hello", title: "Contact" },
   ];
 

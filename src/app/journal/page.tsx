@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Journal",
   description:
-    "Art stories, process notes, announcements, exhibitions and workshop updates from ArtbyMoon.",
+    "Art stories, process notes, announcements, exhibitions and Paint with Moon updates from ArtbyMoon.",
   path: "/journal",
 });
 

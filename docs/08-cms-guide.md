@@ -25,7 +25,7 @@ The **Studio** is where you edit the website. Everything you publish there appea
 
 1. Go to **`https://<the website address>/studio`** (for example `https://www.your-domain.com/studio`). While testing on a computer, it's `http://localhost:3000/studio`.
 2. Sign in with the Google account, GitHub account or email you were invited with.
-3. On the left you'll see **Artist profile, Artworks, Collections, Photography, Workshops, Journal**.
+3. On the left you'll see **Artist profile, Artworks, Collections, Photography, Paint with Moon, Journal**.
 
 ### 2. Add a new painting
 
@@ -84,10 +84,12 @@ All in the artwork's **Words** tab:
 4. **Contact**: your Instagram profile link (e.g. `https://www.instagram.com/art.by.moon_/`) and any other contact details you want public (label, what's displayed, optional `https://` or `mailto:` link). They appear on the **Contact page**, and its "Message" buttons open a direct message to that Instagram account. Leave Instagram empty to keep the current account.
 5. Publish. Empty sections are hidden on the About page.
 
-### 9. Publish a workshop
+### 9. Publish a Paint with Moon session
 
-1. **Workshops → +**.
-2. **Workshop** tab: title, **Generate** web address, **Status** (_To be announced_, _Booking open_, _Waitlist_, _Fully booked_, _Past_), description, optional cover image.
+Paint with Moon is the name of your workshops. Each session is one entry.
+
+1. **Paint with Moon → +**.
+2. **Session** tab: title, **Generate** web address, **Status** (_To be announced_, _Booking open_, _Waitlist_, _Fully booked_, _Past_), description, optional cover image.
 3. **When & where**: date and start time, **time zone** where it happens (e.g. `Asia/Kathmandu`, `Europe/London`) so the time displays correctly, duration in minutes, venue (or "Online").
 4. **Booking**: price and currency (e.g. `NPR`, `GBP`), optional price note, maximum seats, "Book by" date, and the **Booking link** to where people actually book (an Eventbrite/Luma/Google Form page). **Bookings and payments don't happen on this website.** No link? Fill in "How to book" instead, e.g. "Message me on Instagram to reserve a seat".
 5. Publish. When it's over, set Status to **Past** to take it off the upcoming list.

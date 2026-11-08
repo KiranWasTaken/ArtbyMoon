@@ -375,7 +375,7 @@ export function HeroStudioWall({ items, copy }: HeroProps) {
             <LinkButton href="/artworks" variant="solid">
               View the artworks
             </LinkButton>
-            <LinkButton href="/workshops">Workshops</LinkButton>
+            <LinkButton href="/workshops">Paint with Moon</LinkButton>
           </div>
         </div>
       </div>

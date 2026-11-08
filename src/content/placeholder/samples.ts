@@ -10,7 +10,7 @@ export const sampleWorkshops: Workshop[] = [
   {
     slug: "sample-open",
     status: "open",
-    title: "Example workshop title",
+    title: "Example Paint with Moon session",
     startsAt: "2099-03-14T10:00:00-04:00",
     timeZone: "America/Toronto",
     durationMinutes: 150,
@@ -22,7 +22,7 @@ export const sampleWorkshops: Workshop[] = [
   {
     slug: "sample-full",
     status: "full",
-    title: "Second example workshop",
+    title: "Second example session",
     startsAt: "2099-04-11T14:00:00-04:00",
     timeZone: "America/Toronto",
   },

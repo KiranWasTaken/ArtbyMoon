@@ -17,7 +17,7 @@ const sampleBuild = process.env.ARTBYMOON_SAMPLE_CONTENT === "1";
 export const site = {
   name: profile.name,
   description:
-    "Acrylic paintings on canvas, abstract work, polaroid-style paintings, sketches, hand-painted bookmarks, photography and art workshops by ArtbyMoon.",
+    "Acrylic paintings on canvas, abstract work, polaroid-style paintings, sketches, hand-painted bookmarks and photography by ArtbyMoon, and Paint with Moon, her painting sessions.",
   url: rawUrl || "https://example.com",
   /** True only for a real https origin in a non-sample build. */
   indexable: productionOrigin(rawUrl) !== null && !sampleBuild,
@@ -37,7 +37,7 @@ export interface NavItem {
 export const primaryNav: NavItem[] = [
   { href: "/artworks", label: "Artworks" },
   { href: "/photography", label: "Photography" },
-  { href: "/workshops", label: "Workshops" },
+  { href: "/workshops", label: "Paint with Moon" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

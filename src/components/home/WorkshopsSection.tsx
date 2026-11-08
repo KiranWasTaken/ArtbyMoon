@@ -1,5 +1,6 @@
 import { RevealScope } from "@/components/motion/RevealScope";
 import { CopyText } from "@/components/ui/CopyText";
+import { PaintWithMoon } from "@/components/ui/PaintWithMoon";
 import {
   WorkshopEmpty,
   WorkshopTicket,
@@ -8,7 +9,7 @@ import type { Copy, Workshop } from "@/content/types";
 
 interface WorkshopsSectionProps {
   workshops: Workshop[];
-  copy: { title: Copy; intro: Copy; empty: Copy };
+  copy: { intro: Copy; empty: Copy };
 }
 
 /** Published sessions as tickets, or one honest "To be announced" ticket. */
@@ -25,13 +26,13 @@ export function WorkshopsSection({ workshops, copy }: WorkshopsSectionProps) {
           <p className="eyebrow text-ink-muted" data-reveal>
             Join in
           </p>
-          <CopyText
-            as="h2"
-            copy={copy.title}
+          <h2
             id="workshops-title"
             className="mt-4 font-display text-display-l"
             data-reveal="lines"
-          />
+          >
+            <PaintWithMoon />
+          </h2>
           <CopyText
             as="p"
             copy={copy.intro}

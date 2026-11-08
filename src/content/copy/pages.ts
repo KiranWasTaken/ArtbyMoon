@@ -66,15 +66,15 @@ export const pagesCopy = {
     },
     {
       id: "workshop",
-      title: "Workshop enquiries",
+      title: "Paint with Moon enquiries",
       description: draft(
-        "Questions about upcoming sessions, or interest in a workshop for a group.",
+        "Questions about upcoming Paint with Moon sessions, or interest in a session for a group.",
       ),
       tips: [
-        draft("Which workshop, or what kind of session you'd like"),
+        draft("Which session, or what kind of session you'd like"),
         draft("How many people, if it's for a group"),
       ],
-      starter: "Hello ArtbyMoon, I have a question about workshops: ",
+      starter: "Hello ArtbyMoon, I have a question about Paint with Moon: ",
     },
     {
       id: "general",
@@ -87,9 +87,8 @@ export const pagesCopy = {
     },
   ],
   workshops: {
-    title: draft("Art workshops"),
     intro: draft(
-      "ArtbyMoon has hosted art workshops and will announce future sessions here, with a simple way to reserve a seat.",
+      "Paint with Moon: painting sessions with ArtbyMoon. She has hosted them before and will announce new dates here, with a simple way to reserve a seat.",
     ),
     empty: draft(
       "No sessions are published right now. New dates will appear here first.",

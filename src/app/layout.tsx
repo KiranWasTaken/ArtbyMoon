@@ -13,7 +13,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | Paintings, bookmarks, photography & workshops`,
+    default: `${site.name} | Paintings, bookmarks, photography & Paint with Moon`,
     template: `%s | ${site.name}`,
   },
   description: site.description,

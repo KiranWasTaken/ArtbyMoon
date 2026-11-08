@@ -179,9 +179,9 @@ export async function getHomeContent() {
     },
     {
       href: "/workshops",
-      title: "Workshops",
+      title: "Paint with Moon",
       summary: {
-        text: "Art workshops. Future sessions will be announced here.",
+        text: "Painting sessions with ArtbyMoon. New dates will be announced here.",
         status: "draft",
       },
       preview: placeholderMedia("sketch", 4, 3, "vermilion"),
