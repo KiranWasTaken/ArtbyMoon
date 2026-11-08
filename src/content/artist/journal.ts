@@ -42,7 +42,7 @@ export const journalCategories: JournalCategoryInfo[] = [
   },
   {
     slug: "workshop",
-    title: "Workshop updates",
+    title: "Paint with Moon updates",
     description: {
       text: "New dates, recaps and notes from sessions.",
       status: "draft",

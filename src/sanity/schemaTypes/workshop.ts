@@ -21,11 +21,11 @@ function isTimeZone(value: string) {
 
 export const workshop = defineType({
   name: "workshop",
-  title: "Workshop",
+  title: "Paint with Moon session",
   type: "document",
   icon: CalendarIcon,
   groups: [
-    { name: "main", title: "Workshop", default: true },
+    { name: "main", title: "Session", default: true },
     { name: "when", title: "When & where" },
     { name: "booking", title: "Booking" },
   ],
@@ -80,7 +80,7 @@ export const workshop = defineType({
       type: "string",
       group: "when",
       description:
-        "Where the workshop happens, e.g. “Europe/London” or “Asia/Kathmandu”, so the time shows correctly.",
+        "Where the session happens, e.g. “Europe/London” or “Asia/Kathmandu”, so the time shows correctly.",
       validation: (r) =>
         r.custom(
           (v) =>

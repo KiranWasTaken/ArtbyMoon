@@ -96,7 +96,7 @@ Italic is reserved for the artist's voice and for things still to come:
 - the _Moon_ of the wordmark;
 - polaroid captions and the artist's own note on an artwork page (`ArtworkDetail`);
 - the "In her words" quote on the About page and quotes in journal posts (`RichText`);
-- "pending" values: an untitled work on a wall label (`WallLabel`), the _TBA_ stub of an unscheduled workshop.
+- "pending" values: an untitled work on a wall label (`WallLabel`), the _TBA_ stub of an unscheduled Paint with Moon session.
 
 Rules:
 
@@ -123,7 +123,7 @@ Rules:
 | Mount        | Paper margin plus hairline                                        | Artwork detail (passe-partout)                     |
 | Tape         | Translucent `tape` with torn `clip-path` ends                     | Home or studio contexts only. Never in collections |
 | Peg and line | Ochre peg, 1px thread                                             | Bookmark line                                      |
-| Perforation  | Radial-dot edge                                                   | Workshop registration card                         |
+| Perforation  | Radial-dot edge                                                   | Paint with Moon session ticket                     |
 | Grain        | One tiled SVG noise layer, no blend modes                         | Global; lighter in darkroom                        |
 | Shadows      | `rest` and `lift` only                                            | Objects resting on the wall, and on hover          |
 | Radius       | 0 everywhere; 2px for bookmarks; full round for status chips only |                                                    |

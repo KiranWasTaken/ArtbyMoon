@@ -1,8 +1,8 @@
 # ArtbyMoon: portfolio and creative studio
 
-Portfolio for ArtbyMoon (@art.by.moon\_): acrylic paintings, abstract work, polaroid-style paintings, sketches, hand-painted bookmarks, photography and art workshops.
+Portfolio for ArtbyMoon (@art.by.moon\_): acrylic paintings, abstract work, polaroid-style paintings, sketches, hand-painted bookmarks and photography, plus Paint with Moon, her painting workshops.
 
-**Status:** Phase 4 (Sanity CMS integration). All pages are built: homepage, artwork gallery, photography, about, contact, workshops and journal, plus sitemap, robots and social metadata. The site reads content from **Sanity** when a project is configured, and from the local files in `src/content/artist/` otherwise. The ArtbyMoon Sanity project is connected (with `.env.local`) and holds the first published artworks; photography, biography, workshops and journal are still empty, so those pages show their empty states. **The site has not been deployed and the Sanity webhook is not configured yet** (see [docs/08-cms-guide.md](docs/08-cms-guide.md)). Without Sanity variables the site falls back to the local files in `src/content/artist/`. All interface copy is draft until ArtbyMoon approves it. Nothing about her work or life has been invented. **No physical-device testing has been done yet**; see [docs/06-device-testing.md](docs/06-device-testing.md).
+**Status:** Phase 4 (Sanity CMS integration). All pages are built: homepage, artwork gallery, photography, about, contact, Paint with Moon (`/workshops`) and journal, plus sitemap, robots and social metadata. The site reads content from **Sanity** when a project is configured, and from the local files in `src/content/artist/` otherwise. The ArtbyMoon Sanity project is connected (with `.env.local`) and holds the first published artworks; photography, biography, workshops and journal are still empty, so those pages show their empty states. **The site has not been deployed and the Sanity webhook is not configured yet** (see [docs/08-cms-guide.md](docs/08-cms-guide.md)). Without Sanity variables the site falls back to the local files in `src/content/artist/`. All interface copy is draft until ArtbyMoon approves it. Nothing about her work or life has been invented. **No physical-device testing has been done yet**; see [docs/06-device-testing.md](docs/06-device-testing.md).
 
 ## Requirements
 
@@ -83,7 +83,7 @@ With no Sanity project configured, content lives in typed files under `src/conte
 
 - **Photography:** put files in `public/images/photography/` (location data removed) and add records to `src/content/artist/photographs.ts`. Title, caption, date (`YYYY-MM` or `YYYY-MM-DD`), location and category are optional. Category filters appear automatically once there are 6+ photos in 2+ categories.
 - **About:** edit `src/content/artist/about.ts` (intro, biography paragraphs, portrait, materials, inspirations, approach). Empty sections are hidden.
-- **Workshops:** add entries to `src/content/artist/workshops.ts` with confirmed details only and an external `bookingUrl`; set `status: "past"` to retire one.
+- **Paint with Moon sessions:** add entries to `src/content/artist/workshops.ts` with confirmed details only and an external `bookingUrl`; set `status: "past"` to retire one.
 - **Wording:** `src/content/copy/*.ts`; change `status` to `"approved"` once ArtbyMoon approves a line.
 
 Rebuild after any change to local files. Once Sanity is connected, artworks, photography, workshops, journal and the artist profile are edited in the Studio instead; interface wording stays in `src/content/copy/`.

@@ -7,7 +7,7 @@ const CATEGORIES = [
   { title: "Process notes", value: "process" },
   { title: "Announcement", value: "announcement" },
   { title: "Exhibition", value: "exhibition" },
-  { title: "Workshop update", value: "workshop" },
+  { title: "Paint with Moon update", value: "workshop" },
 ];
 
 export const journalPost = defineType({

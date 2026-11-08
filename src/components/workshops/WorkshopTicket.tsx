@@ -66,7 +66,7 @@ const cta = (workshop: Workshop) => {
     return { href: workshop.bookingUrl, label: "Reserve a seat" };
   if (workshop.bookingUrl && workshop.status === "waitlist")
     return { href: workshop.bookingUrl, label: "Join the waitlist" };
-  return { href: "/contact", label: "Ask about this workshop" };
+  return { href: "/contact", label: "Ask about this session" };
 };
 
 export function WorkshopTicket({
@@ -101,7 +101,7 @@ export function WorkshopTicket({
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <H className="font-display text-title">
-          {workshop.title ?? "Workshop, title to be confirmed"}
+          {workshop.title ?? "Paint with Moon session, title to be confirmed"}
         </H>
         <StatusChip status={workshop.status} />
       </div>
@@ -173,7 +173,7 @@ export function WorkshopEmpty({
       />
       <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
         <LinkButton href="/contact" variant="solid">
-          Ask about workshops
+          Ask about Paint with Moon
         </LinkButton>
         <a href={site.instagram.url} className="ink-link eyebrow" rel="me">
           Updates on @{site.instagram.handle}

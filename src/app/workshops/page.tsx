@@ -1,5 +1,6 @@
 import { RevealScope } from "@/components/motion/RevealScope";
 import { CopyText } from "@/components/ui/CopyText";
+import { PaintWithMoon } from "@/components/ui/PaintWithMoon";
 import {
   WorkshopEmpty,
   WorkshopTicket,
@@ -9,9 +10,9 @@ import { getUpcomingWorkshops } from "@/lib/content/workshops";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Workshops",
+  title: "Paint with Moon",
   description:
-    "Art workshops with ArtbyMoon. Upcoming sessions are announced here.",
+    "Paint with Moon: painting sessions with ArtbyMoon. New dates are announced here.",
   path: "/workshops",
 });
 
@@ -32,13 +33,13 @@ export default async function WorkshopsPage() {
           <p className="eyebrow text-ink-muted" data-reveal>
             Join in
           </p>
-          <CopyText
-            as="h1"
+          <h1
             id="workshops-page-title"
-            copy={copy.title}
             className="mt-4 font-display text-display-l"
             data-reveal="lines"
-          />
+          >
+            <PaintWithMoon />
+          </h1>
           <CopyText
             as="p"
             copy={copy.intro}

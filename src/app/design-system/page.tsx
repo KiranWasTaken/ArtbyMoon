@@ -244,7 +244,7 @@ const typeScale = [
   {
     token: "body",
     sample:
-      "Running text for journal posts, workshop details and artwork notes. 17px with generous leading, about 65 characters per line.",
+      "Running text for journal posts, Paint with Moon session details and artwork notes. 17px with generous leading, about 65 characters per line.",
     family: "DM Sans",
     cls: "text-body max-w-prose",
   },
@@ -525,7 +525,7 @@ export default function DesignSystemPage() {
             </Specimen>
             <Specimen
               label="StatusChip"
-              note="Workshop availability. Status only; never invented dates or seats."
+              note="Paint with Moon session availability. Status only; never invented dates or seats."
             >
               <div className="flex flex-wrap gap-2">
                 {workshopStatuses.map((s) => (
@@ -617,7 +617,7 @@ export default function DesignSystemPage() {
           </p>
           <div className="mt-10 grid gap-10 xl:grid-cols-2">
             <Specimen
-              label="Workshops · published (fixture)"
+              label="Paint with Moon · published (fixture)"
               note="Only supplied fields render; the call to action follows status and booking link."
             >
               <div className="flex w-full flex-col gap-8">
@@ -627,7 +627,7 @@ export default function DesignSystemPage() {
               </div>
             </Specimen>
             <Specimen
-              label="Workshops · nothing published"
+              label="Paint with Moon · nothing published"
               note="The live homepage state today."
             >
               <WorkshopEmpty

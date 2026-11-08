@@ -13,7 +13,7 @@ export const homeCopy = {
     eyebrow: draft("Paintings · Polaroids · Bookmarks · Photographs"),
     note: draft("come in, have a look around"),
     intro: draft(
-      "Acrylic paintings on canvas, abstract studies, polaroid-sized paintings with handwritten captions, sketches, hand-painted bookmarks and photography, plus art workshops.",
+      "Acrylic paintings on canvas, abstract studies, polaroid-sized paintings with handwritten captions, sketches, hand-painted bookmarks and photography, plus Paint with Moon sessions.",
     ),
   },
   explore: {
@@ -32,9 +32,8 @@ export const homeCopy = {
     ),
   },
   workshops: {
-    title: draft("Art workshops"),
     intro: draft(
-      "ArtbyMoon has hosted art workshops and will announce future sessions here, with a simple way to reserve a seat.",
+      "Paint with Moon: painting sessions with ArtbyMoon. She has hosted them before and will announce new dates here, with a simple way to reserve a seat.",
     ),
     empty: draft(
       "No sessions are published right now. New dates will appear here first.",
@@ -43,7 +42,7 @@ export const homeCopy = {
   journal: {
     title: draft("Journal"),
     intro: draft(
-      "Art stories, process notes, announcements, exhibitions and workshop updates.",
+      "Art stories, process notes, announcements, exhibitions and Paint with Moon updates.",
     ),
     empty: draft("Nothing published yet."),
   },

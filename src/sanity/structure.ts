@@ -80,7 +80,9 @@ export const structure: StructureResolver = (S) =>
         .title("Photography")
         .icon(ImagesIcon),
       S.divider(),
-      S.documentTypeListItem("workshop").title("Workshops").icon(CalendarIcon),
+      S.documentTypeListItem("workshop")
+        .title("Paint with Moon")
+        .icon(CalendarIcon),
       S.documentTypeListItem("journalPost")
         .title("Journal")
         .icon(DocumentTextIcon),
