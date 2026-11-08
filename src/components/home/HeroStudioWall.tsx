@@ -273,12 +273,14 @@ export function HeroStudioWall({ items, copy }: HeroProps) {
           <h1
             id="hero-title"
             data-hero-title
-            className="relative z-10 mt-3 font-display text-display-xl text-[clamp(3.5rem,1.2rem+11.7vw,11.7rem)] lg:absolute lg:top-[32%] lg:left-0 lg:mt-0 lg:text-[12.5cqi] lg:leading-[0.84]"
+            className="relative z-10 mt-3 font-display text-display-xl text-[clamp(4.4rem,1.5rem+14.6vw,14.6rem)] lg:absolute lg:top-[32%] lg:left-0 lg:mt-0 lg:text-[14cqi] lg:leading-[0.84]"
           >
             <span className="sr-only">ArtbyMoon</span>
-            {/* Visual name, with her crescent moon (@art.by.moon_) as a mark after it. */}
+            {/* Visual name: "Artby" roman, "Moon" italic, with her crescent moon (@art.by.moon_) as a mark after it. */}
             <span aria-hidden="true" className="relative inline-block">
-              <span data-hero-name>ArtbyMoon</span>
+              <span data-hero-name>
+                Artby<span className="italic">Moon</span>
+              </span>
               <Crescent
                 data-hero-moon
                 className="absolute top-[0.035em] -right-[0.2em] w-[0.17em] text-accent"

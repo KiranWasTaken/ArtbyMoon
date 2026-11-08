@@ -12,8 +12,13 @@ export const alt = "ArtbyMoon: paintings, polaroids, bookmarks and photographs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const fraunces = await readFile(
-  join(process.cwd(), "assets/fonts/Fraunces-Regular.ttf"),
+// Instrument Serif, the site's display face (bundled TTFs: the image
+// renderer can't use next/font's woff2 files, and must not fetch at runtime).
+const instrument = await readFile(
+  join(process.cwd(), "assets/fonts/InstrumentSerif-Regular.ttf"),
+);
+const instrumentItalic = await readFile(
+  join(process.cwd(), "assets/fonts/InstrumentSerif-Italic.ttf"),
 );
 
 export default async function OpenGraphImage() {
@@ -28,14 +33,19 @@ export default async function OpenGraphImage() {
         padding: "0 96px",
         background: "#f4efe6",
         color: "#1b1a17",
-        fontFamily: "Fraunces",
+        fontFamily: "Instrument Serif",
       }}
     >
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         <span
-          style={{ fontSize: 156, lineHeight: 1, letterSpacing: "-0.04em" }}
+          style={{
+            display: "flex",
+            fontSize: 176,
+            lineHeight: 1,
+            letterSpacing: "-0.02em",
+          }}
         >
-          ArtbyMoon
+          Artby<span style={{ fontStyle: "italic" }}>Moon</span>
         </span>
         <svg
           width="56"
@@ -73,7 +83,18 @@ export default async function OpenGraphImage() {
     {
       ...size,
       fonts: [
-        { name: "Fraunces", data: fraunces, style: "normal", weight: 400 },
+        {
+          name: "Instrument Serif",
+          data: instrument,
+          style: "normal",
+          weight: 400,
+        },
+        {
+          name: "Instrument Serif",
+          data: instrumentItalic,
+          style: "italic",
+          weight: 400,
+        },
       ],
     },
   );

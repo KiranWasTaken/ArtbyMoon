@@ -45,32 +45,64 @@ Per-artwork tint: `ImageAsset.dominantColor` (from the CMS image palette) can su
 
 ## Typography
 
-| Role               | Face                                                         | Why                                                                                                                                                 |
-| ------------------ | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Display            | **Fraunces** (variable, with `opsz`, `SOFT` and `WONK` axes) | Editorial serif with soft, almost brushed terminals at `SOFT 60`. `opsz` keeps huge sizes delicate. More personal than the Didone "luxury" default. |
-| Interface and text | **Schibsted Grotesk**                                        | A grotesk designed for a newspaper: editorial, neutral, legible at small sizes, with a hint of character.                                           |
-| Accent             | **Caveat**, _interim_                                        | Stand-in for ArtbyMoon's own handwriting (digitise from bookmark calligraphy, then self-host via `next/font/local`).                                |
+The voice of an independent gallery's catalogue: a calm, high-contrast display serif for titles, a quiet geometric grotesk for everything you read or tap, and a pencilled hand for the margins.
 
-All three fonts are OFL-licensed, self-hosted by `next/font`, and use `display: swap`.
+| Role               | Face                                         | Why                                                                                                                                                                                                                                       |
+| ------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Display            | **Instrument Serif** (400, roman and italic) | Narrow, high-contrast and unhurried at large sizes, like gallery titling. Its italic is the site's expressive voice (the wordmark's _Moon_, captions, quotes).                                                                            |
+| Interface and text | **DM Sans** (variable 100–1000, `opsz` axis) | A quiet geometric grotesk; the optical-size axis keeps small labels open and running text even. Used for body text, navigation, buttons, labels and captions.                                                                             |
+| Accent             | **Caveat** (400–700), _interim_              | Pencilled annotations only: the `Handnote` margin notes (homepage sections, empty states, the @art.by.moon_ handle on About) and the message-starter preview on Contact. Stand-in for ArtbyMoon's own handwriting, to be digitised later. |
 
-Fluid scale (`clamp`, no breakpoint jumps):
+All fonts are OFL-licensed and self-hosted by `next/font/google` at build time (`src/lib/fonts.ts`), with `display: swap`: there are no requests to a font service at runtime. Instrument Serif roman, DM Sans and Caveat are preloaded; the Instrument Serif italic is a separate file that is **not** preloaded, so it never competes with first paint. The social-preview image (`src/app/opengraph-image.tsx`) uses the same face from bundled TTFs in `assets/fonts/` (licence: `assets/fonts/OFL-InstrumentSerif.txt`).
 
-| Token                | Size            | Line height / tracking |
-| -------------------- | --------------- | ---------------------- |
-| `display-xl`         | 72px → 240px    | 0.84 / −0.04em         |
-| `display-l`          | 48px → 120px    | 0.92 / −0.03em         |
-| `display-m`          | 36px → 68px     | 1.0 / −0.02em          |
-| `title`              | 24px → 36px     | 1.15                   |
-| `lede`               | 19px → 23px     | 1.5                    |
-| `body`               | 17px            | 1.65                   |
-| `caption`            | 14px            | 1.45                   |
-| `label` (`.eyebrow`) | 12px, uppercase | +0.14em                |
+### Tokens
+
+Set in `src/app/globals.css` and used through Tailwind utilities:
+
+| Token (Tailwind)                 | CSS variable                                              |
+| -------------------------------- | --------------------------------------------------------- |
+| `font-display`                   | `--font-display` → `--font-instrument` (Instrument Serif) |
+| `font-display` + `italic`        | `--font-instrument-italic` (see rule below)               |
+| `font-sans` (the `body` default) | `--font-sans` → `--font-dm-sans` (DM Sans)                |
+| `font-hand`                      | `--font-hand` → `--font-caveat` (Caveat)                  |
+
+Italic display text, including an italic word inside a heading, is selected by `.font-display.italic, .font-display .italic`, which points at the italic file. `.font-display` also sets `font-synthesis: none`: Instrument Serif has one weight, so the browser must never fake a bold or an italic.
+
+### Scale
+
+Fluid (`clamp`, no breakpoint jumps). Display sizes run about 10% larger than a book serif would need, because Instrument Serif is narrow: the same line lengths, more presence. Its fine hairlines need only gentle negative tracking.
+
+| Token                | Size (min → max) | Line height / tracking | Face, weight         |
+| -------------------- | ---------------- | ---------------------- | -------------------- |
+| `display-xl`         | 80px → 264px     | 0.84 / −0.022em        | Instrument Serif 400 |
+| `display-l`          | 52px → 132px     | 0.9 / −0.018em         | Instrument Serif 400 |
+| `display-m`          | 40px → 76px      | 0.98 / −0.012em        | Instrument Serif 400 |
+| `title`              | 26px → 40px      | 1.08 / −0.005em        | Instrument Serif 400 |
+| `lede`               | 19px → 23px      | 1.5                    | DM Sans 400          |
+| `body`               | 17px             | 1.65                   | DM Sans 400          |
+| `caption`            | 14px             | 1.5                    | DM Sans 400          |
+| `label` (`.eyebrow`) | 12px, uppercase  | 1.3 / +0.12em          | DM Sans 500          |
+
+The homepage hero name is the one deliberate exception: it is sized to the hero wall (`14cqi` on desktop, `clamp(4.4rem, 1.5rem + 14.6vw, 14.6rem)` below) so the name, brush stroke and crescent keep their composition.
+
+### The wordmark
+
+**Artby**_Moon_: "Artby" in Instrument Serif roman, "Moon" in its italic, a quiet nod to @art.by.moon\_ and the crescent that accompanies it. It is one component, `src/components/ui/Wordmark.tsx`, used in the header, the mobile menu and the footer; the homepage hero and the social-preview image set it the same way. It reads as a single word ("ArtbyMoon") to screen readers, and is a single inline element, so a flex parent can't split it. Header size: 1.85rem, −0.01em.
+
+### Italic usage
+
+Italic is reserved for the artist's voice and for things still to come:
+
+- the _Moon_ of the wordmark;
+- polaroid captions and the artist's own note on an artwork page (`ArtworkDetail`);
+- the "In her words" quote on the About page and quotes in journal posts (`RichText`);
+- "pending" values: an untitled work on a wall label (`WallLabel`), the _TBA_ stub of an unscheduled workshop.
 
 Rules:
 
-- Display type is only ever Fraunces.
-- Interface labels are only ever the uppercase grotesk.
-- Italics are reserved for "pending" values and wall-label titles.
+- Display type is only ever Instrument Serif, at weight 400.
+- Interface labels are only ever the uppercase DM Sans `.eyebrow`.
+- Handwriting (Caveat) is only for annotations, never for content or navigation.
 - Measure is capped at `max-w-prose` (38rem).
 
 ## Spacing and layout

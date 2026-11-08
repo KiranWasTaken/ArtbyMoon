@@ -1,41 +1,53 @@
-import { Caveat, Fraunces, Schibsted_Grotesk } from "next/font/google";
+import { Caveat, DM_Sans, Instrument_Serif } from "next/font/google";
 
 /**
- * Display serif. The SOFT axis rounds the terminals so headings feel brushed
- * rather than engraved; opsz keeps large sizes delicate and small sizes sturdy.
+ * All fonts are self-hosted by next/font at build time: no request to an
+ * external font service at runtime.
  */
-export const fraunces = Fraunces({
+
+/**
+ * Display serif: Instrument Serif. High-contrast, narrow and calm at large
+ * sizes, like the titling of an independent gallery catalogue. One weight
+ * only (400): never synthesise bold (see `font-synthesis` in globals.css).
+ */
+export const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
+  weight: "400",
   style: "normal",
-  variable: "--font-fraunces",
+  variable: "--font-instrument",
   display: "swap",
 });
 
 /**
- * Fraunces italic, loaded separately and NOT preloaded (it was a 149 KB
- * preload). It is used only for small italic notes, never above the fold
- * on the homepage. globals.css points .font-display.italic at it.
+ * Instrument Serif italic: the expressive voice (the "Moon" in the wordmark,
+ * captions, quotes). Loaded separately and NOT preloaded, like the previous
+ * italic, so it never competes with the roman for first paint.
+ * globals.css points `.font-display.italic` and `.wordmark em` at it.
  */
-export const frauncesItalic = Fraunces({
+export const instrumentSerifItalic = Instrument_Serif({
   subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
+  weight: "400",
   style: "italic",
-  variable: "--font-fraunces-italic",
+  variable: "--font-instrument-italic",
   display: "swap",
   preload: false,
 });
 
-/** Interface and running text: an editorial grotesk with real newspaper roots. */
-export const schibsted = Schibsted_Grotesk({
+/**
+ * Interface and running text: DM Sans, a quiet geometric grotesk with an
+ * optical-size axis, so small labels stay open and body text stays even.
+ */
+export const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-schibsted",
+  axes: ["opsz"],
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
 /**
- * Handwritten accent — INTERIM. The intention is to replace this with
- * ArtbyMoon's own digitised lettering (see docs/02-design-system.md).
+ * Handwritten accent, for pencilled annotations only. INTERIM: the
+ * intention is to replace this with ArtbyMoon's own digitised lettering
+ * (see docs/02-design-system.md).
  */
 export const caveat = Caveat({
   subsets: ["latin"],
@@ -43,4 +55,4 @@ export const caveat = Caveat({
   display: "swap",
 });
 
-export const fontVariables = `${fraunces.variable} ${frauncesItalic.variable} ${schibsted.variable} ${caveat.variable}`;
+export const fontVariables = `${instrumentSerif.variable} ${instrumentSerifItalic.variable} ${dmSans.variable} ${caveat.variable}`;

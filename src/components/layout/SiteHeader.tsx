@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { cn } from "@/lib/cn";
 import { ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 import { useLenis } from "@/lib/motion/SmoothScroll";
@@ -60,10 +61,10 @@ export function SiteHeader() {
     >
       <Link
         href="/"
-        className="font-display text-[1.65rem] leading-none tracking-tight"
+        className="font-display text-[1.85rem] leading-none tracking-[-0.01em]"
         aria-label={`${site.name}, home`}
       >
-        {site.name}
+        <Wordmark />
       </Link>
 
       <nav aria-label="Primary" className="hidden lg:block">
@@ -101,8 +102,8 @@ export function SiteHeader() {
         )}
       >
         <div className="flex h-16 items-center justify-between md:h-20">
-          <span className="font-display text-[1.65rem] leading-none">
-            {site.name}
+          <span className="font-display text-[1.85rem] leading-none tracking-[-0.01em]">
+            <Wordmark />
           </span>
           <button
             type="button"
