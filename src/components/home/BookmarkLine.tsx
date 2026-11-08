@@ -139,6 +139,12 @@ export function BookmarkLine({
           )}
         >
           {items.map((item, i) => {
+            // A photograph of a bookmark on a background (about 3:4) needs
+            // more width than a slim strip: a placeholder, or a photo
+            // cropped to the bookmark itself (narrower than 1:2).
+            const photo =
+              item.media.kind === "image" &&
+              item.media.image.width / item.media.image.height >= 0.5;
             return (
               <li key={item.id} className="shrink-0 snap-start">
                 <div
@@ -162,19 +168,22 @@ export function BookmarkLine({
                     aria-label={`${item.label} ${i + 1}. View bookmarks`}
                     className={cn(
                       "block shadow-rest transition-[translate,box-shadow] duration-500 ease-brush hover:-translate-y-1 hover:shadow-lift",
-                      // Photographs show the bookmark on a background, so
-                      // they need more width than a bare painted strip.
-                      item.media.kind === "image"
-                        ? "w-[clamp(8rem,12vw,11rem)]"
-                        : "w-[clamp(5.5rem,7vw,7.5rem)]",
+                      // Width only, so every image keeps its own proportions.
+                      // On phones about two photographs show at a time
+                      // (swipe for more).
+                      // On the pinned full-screen line the width is also
+                      // capped by screen height so tall pieces never clip.
+                      photo
+                        ? "w-[clamp(11.5rem,17vw,16rem)] pinned:w-[min(clamp(11.5rem,17vw,16rem),32svh)]"
+                        : "w-[clamp(8rem,10vw,11rem)] pinned:w-[min(clamp(8rem,10vw,11rem),12svh)]",
                     )}
                   >
                     <ArtMedia
                       media={item.media}
                       sizes={
-                        item.media.kind === "image"
-                          ? "(min-width: 64rem) 11rem, 8rem"
-                          : "(min-width: 64rem) 8rem, 6rem"
+                        photo
+                          ? "(min-width: 64rem) 16rem, 12rem"
+                          : "(min-width: 64rem) 11rem, 8rem"
                       }
                     />
                   </Link>
