@@ -30,7 +30,17 @@ export function SiteFooter() {
       </div>
       <div className="mx-auto mt-16 flex max-w-page flex-col gap-2 border-t border-line pt-6 text-caption text-ink-muted sm:flex-row sm:justify-between">
         <p>
-          © {site.name}. All artwork shown remains the property of the artist.
+          © {site.name} 2026. All artwork shown remains the property of the
+          artist. Created By:{" "}
+          <a
+            href="https://www.kiran-shrestha.com.np/"
+            target="_blank"
+            rel="noopener"
+            className="ink-link"
+          >
+            Kiran Shrestha
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
         </p>
         <a href={site.instagram.url} className="ink-link self-start" rel="me">
           Instagram @{site.instagram.handle}
